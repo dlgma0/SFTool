@@ -79,10 +79,10 @@ def update_case_clarification(sf, case_number, case_info):
                                  'Error_s__c': target_errors,
                                  'Resolution_Criteria__c': target_resolution,
                                  'Business_Impact__c': target_impact,
-                                 'Delivered_Solution__c': target_closure_details,
+                                 'Delivered_Solution__c': target_closure_details
                                  # 发现修改状态的话Case Owner会被改为Admin Queue，就算改OwnerId也没用，所以还是不改下面的内容了
-                                 'Status': target_status,
-                                 'OnHold_Reason__c': target_sub_status,
+                                 # 'Status': target_status,
+                                 # 'OnHold_Reason__c': target_sub_status,
                                  # 'OwnerId': '005F0000004zlmwIAA'
                                  }
     try:
@@ -153,7 +153,7 @@ def update_case_clarification_v1(sf, case_number):
                                  'Delivered_Solution__c': target_closure_details,
                                  # 发现修改状态的话Case Owner会被改为Admin Queue，就算改OwnerId也没用，所以还是不改下面的内容了
                                  'Status': target_status,
-                                 'OnHold_Reason__c': target_sub_status,
+                                 'OnHold_Reason__c': target_sub_status
                                  # 'OwnerId': '005F0000004zlmwIAA'
                                  }
     try:
