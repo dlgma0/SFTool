@@ -1,3 +1,6 @@
+# v2.1 change log:
+    # Removed Change Case Status logic(It won't change to Working status anymore), we see change case status under some conditions would casue the case to be reassigned to Admin Queue. So removed it and now the case status will remain unchanged after running the Execute
+
 # v2.0 change log:
 # Major changes:
     # Combined FC page and Language page into one UI
