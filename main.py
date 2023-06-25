@@ -9,6 +9,12 @@ from Utilities import *
 from UpdateSFCaseLanguage_with_UI_v1 import *
 from MyReadFile import get_config
 
+# v2.2 change log:
+    # Removed Save Assessment as it causes the case owner change to Admin Queue
+
+# v2.1 change log:
+    # Removed Change Case Status logic(It won't change to Working status anymore), we see change case status under some conditions would casue the case to be reassigned to Admin Queue. So removed it and now the case status will remain unchanged after running the Execute
+
 # v2.0 change log:
 # Major changes:
     # Combined FC page and Language page into one UI
@@ -47,12 +53,13 @@ class Worker(QObject):
             if get_case_recordtype(sf, case_number) == '012A0000000Vg0PIAS':
                 try:
                     # 1) get the case info for this case_number first
-                    # case_info = get_case_info(sf, case_number)
+                    case_info = get_case_info(sf, case_number)
                     # 2) update assessment to True
-                    update_case_assessment(sf, case_number, case_info)
-                    self.console_updated.emit('log',
-                                              f'[{get_time_for_logging()}] Successfully updated assessment for C{case_number}')
-                    time.sleep(0.5)
+                    # Adding assessment causing the New case to be reassigned to Admin Queue, remove this to see if issue resolves
+                    # update_case_assessment(sf, case_number, case_info)
+                    # self.console_updated.emit('log',
+                    #                           f'[{get_time_for_logging()}] Successfully updated assessment for C{case_number}')
+                    # time.sleep(0.5)
                     # 3) Create FC
                     create_fc(sf, case_number, fc_template)
                     self.console_updated.emit('log',

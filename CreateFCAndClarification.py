@@ -71,8 +71,8 @@ if __name__ == "__main__":
                 # 1) get the case info for this case_number first
                 case_info = get_case_info(sf, case_number)
                 # 2) update assessment to True
-                update_case_assessment(sf, case_number, case_info)
-                time.sleep(0.5)
+                # update_case_assessment(sf, case_number, case_info)
+                # time.sleep(0.5)
                 # 3) Create FC
                 create_fc(sf, case_number, fc_template)
                 time.sleep(0.5)
