@@ -9,7 +9,7 @@ from Utilities import *
 from UpdateSFCaseLanguage_with_UI_v1 import *
 from MyReadFile import get_config
 # v2.2 change log:
-    # Removed Save Assessment as it causes the case owner change to Admin Queue
+    # Removed Save Assessment as it causes the case owner change to Admin Queue.
 
 # v2.1 change log:
     # Removed Change Case Status logic(It won't change to Working status anymore), we see change case status under some conditions would casue the case to be reassigned to Admin Queue. So removed it and now the case status will remain unchanged after running the Execute
