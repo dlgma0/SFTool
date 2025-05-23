@@ -1,10 +1,12 @@
-*.txt
+case.txt
 *.spec
 config.json
+config_release.json
 CreateFC*UI*.py
 main_*.py
 mygui.ui
 sfgui.ui
+sfgui_v3.ui
 sfgui - Copy.ui
 *test*.py
 UpdateSFCaseLanguage.py

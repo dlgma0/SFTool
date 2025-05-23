@@ -1,3 +1,9 @@
+# v2.3 change log:
+    # Format the closure detail date format to align with the SF "Add Status" format
+      # After: [23 Jan 25] for 2025/01/23
+      # Before: [2025-Jan-23] for 2025/01/23
+    # rewrite the function read_string_to_array to handle when the case number starts with C or c
+
 # v2.2 change log:
     # Removed Save Assessment as it causes the case owner change to Admin Queue
 

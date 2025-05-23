@@ -17,16 +17,24 @@ def is_fc_made(sf, case_info):
     return task_exists
 
 
+# V2.3 Change:
+#   Added 3 fields in Select statements for article query
+#   Product__c,Release__c,Date_Code__c
 def get_case_info(sf, case_number):
     query = "SELECT Id,Assessment_Done__c,Issue_has_been_Clarified__c,Symptoms__c,Steps_to_Reproduce__c,Error_s__c," \
             "Resolution_Criteria__c,Business_Impact__c,Delivered_Solution__c,Status,OnHold_Reason__c," \
-            "LongSubject__c,Language__c " \
+            "LongSubject__c,Language__c,Product__c,Release__c,Date_Code__c " \
             "FROM Case WHERE CaseNumber = '{}'".format(case_number)
     result = sf.query(query)
     return result["records"][0]
 # update_case_clarification v2:
 # 1) removed parameter case_number
 # 2) added case_info
+
+# V2.3 Change
+# Format the closure detail date format to align with the SF "Add Status" format
+# After: [23 Jan 25] for 2025/01/23
+# Before: [2025-Jan-23] for 2025/01/23
 def update_case_clarification(sf, case_number, case_info):
     case_id = case_info["Id"]
     # Original values for Clarification fields
@@ -45,8 +53,9 @@ def update_case_clarification(sf, case_number, case_info):
     working_str = " Working on it\n"
     # need_more_info = " Asked for more detail info\n"
     # current_date = datetime.today().strftime('%Y-%m-%d')
-    current_date = datetime.today().strftime('%Y-%b-%d')
-    formatted_date = "[" + current_date + "]"
+    # current_date = datetime.today().strftime('%Y-%b-%d')
+    # formatted_date = "[" + current_date + "]"
+    formatted_date = datetime.today().strftime('[%d %b %y]')
     closure_working = formatted_date + working_str if(is_blank_str(orig_str)) else formatted_date + working_str + orig_str
 
     # Target values for Clarification fields
@@ -91,7 +100,10 @@ def update_case_clarification(sf, case_number, case_info):
     except Exception as e:
         print(f"An Error occurred while updating: {e}")
 
-
+# V2.3 Change
+# Format the closure detail date format to align with the SF "Add Status" format
+# After: [23 Jan 25] for 2025/01/23
+# Before: [2025-Jan-23] for 2025/01/23
 def update_case_clarification_v1(sf, case_number):
     query = "SELECT Id,Issue_has_been_Clarified__c,Symptoms__c,Steps_to_Reproduce__c,Error_s__c," \
             "Resolution_Criteria__c,Business_Impact__c,Delivered_Solution__c,Status,OnHold_Reason__c," \
@@ -116,8 +128,9 @@ def update_case_clarification_v1(sf, case_number):
     working_str = " Working on it\n"
     # need_more_info = " Asked for more detail info\n"
     # current_date = datetime.today().strftime('%Y-%m-%d')
-    current_date = datetime.today().strftime('%Y-%b-%d')
-    formatted_date = "[" + current_date + "]"
+    # current_date = datetime.today().strftime('%Y-%b-%d')
+    # formatted_date = "[" + current_date + "]"
+    formatted_date = datetime.today().strftime('[%d %b %y]')
     closure_working = formatted_date + working_str if(is_blank_str(orig_str)) else formatted_date + working_str + orig_str
 
     # Target values for Clarification fields
@@ -171,6 +184,47 @@ def update_case_assessment(sf, case_number, case_info):
         print(f'Successfully updated assessment for C{case_number}')
     except Exception as e:
         print(f"An Error occurred while updating assessment: {e}")
+
+
+# V2.3 Change:
+#   Added 4 functions below for article prompt generation
+#       get_product_info,get_release_info,get_date_code_info,get_last_email_content
+#   Note: Actually these functions are not related to this python file(which is UpdateSFClarification but placing here to reduce risk with version upgrade regression
+# Get Product Info
+def get_product_info(sf,productID):
+    query = "SELECT Id,Name "\
+            "FROM Product2 WHERE Id = '{}'".format(productID)
+    result = sf.query(query)
+    return result["records"][0]
+
+
+# Get Release Info
+def get_release_info(sf,releaseID):
+    query = "SELECT Id,Name "\
+            "FROM Release__c WHERE Id = '{}'".format(releaseID)
+    result = sf.query(query)
+    return result["records"][0]
+
+
+# Get Date Code Info
+def get_date_code_info(sf,dateCodeID):
+    query = "SELECT Id,Name "\
+            "FROM Date_Code__c WHERE Id = '{}'".format(dateCodeID)
+    result = sf.query(query)
+    return result["records"][0]
+
+
+# Get Last Email attachment in the Case
+def get_last_email_content(sf, case_id):
+    query = f"""
+        SELECT Id, Subject, TextBody
+        FROM EmailMessage
+        WHERE ParentId = '{case_id}'
+        ORDER BY CreatedDate DESC
+        LIMIT 1
+    """
+    result = sf.query(query)
+    return result["records"][0]
 
 
 if __name__ == "__main__":

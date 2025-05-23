@@ -37,13 +37,27 @@ def read_file_to_array(file_name):
         if file:
             file.close()
 
-
-def read_string_to_array(content):
+# V2.3 Change:
+# rename function read_string_to_array to read_string_to_array_legacy
+def read_string_to_array_legacy(content):
     final_array = []
     lines = content.split("\n")
     for line in lines:
         if not is_blank_str(line):
             final_array.append(line.strip())
+    return final_array
+
+# V2.3 Change:
+# rewrite the function read_string_to_array to handle when the case number starts with C or c
+def read_string_to_array(content):
+    final_array = []
+    lines = content.split("\n")
+    for line in lines:
+        if not is_blank_str(line):
+            stripped_line = line.strip()
+            if stripped_line.startswith('C') or stripped_line.startswith('c'):
+                stripped_line = stripped_line[1:]
+            final_array.append(stripped_line)
     return final_array
 
 
