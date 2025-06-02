@@ -1,3 +1,22 @@
+# v3.0 change log:
+    # New Features:
+        # 1. Article Prompt for AAA feature implemented
+        How to use it:
+        1) Provide a case number with XXXXXXXX or CXXXXXXXX
+        2) Click Execute button
+        3) Copy the Generated Prompt for AAA and paste to AAA tool for article creation
+        Note: If Include Case Comment is checked, the generated prompt will also include the Case Comment
+    # Bug Fixes:
+        # 1. Logging exceptions instead of crashing the program when:
+            1) Provided config.json file is invalid
+            2) Provided Case number is invalid or doesn't exist
+    # Improvements:
+        # 1. Added Reset button on each page to reset the contents
+        # 2. The error message will show in a popup message in addition to the log
+        # 3. Format the closure detail date format to align with the SF "Add Status" format
+            # After: [2 Jan 25] for 2025/1/2
+            # Before: [02 Jan 25] for 2025/1/2
+
 # v2.3 change log:
     # Format the closure detail date format to align with the SF "Add Status" format
       # After: [23 Jan 25] for 2025/01/23

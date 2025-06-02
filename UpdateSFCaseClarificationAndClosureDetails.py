@@ -3,6 +3,8 @@ from MyReadFile import read_file_to_array, is_blank_str
 from datetime import datetime
 import json
 
+from Utilities import get_current_date
+
 
 # Check whether
 # case_info type: OrderedDict
@@ -17,8 +19,8 @@ def is_fc_made(sf, case_info):
     return task_exists
 
 
-# V2.3 Change:
-#   Added 3 fields in Select statements for article query
+# V2.3 & 3.0 Change:
+#   Added 3 fields in Select statements for article prompt query
 #   Product__c,Release__c,Date_Code__c
 def get_case_info(sf, case_number):
     query = "SELECT Id,Assessment_Done__c,Issue_has_been_Clarified__c,Symptoms__c,Steps_to_Reproduce__c,Error_s__c," \
@@ -26,6 +28,9 @@ def get_case_info(sf, case_number):
             "LongSubject__c,Language__c,Product__c,Release__c,Date_Code__c " \
             "FROM Case WHERE CaseNumber = '{}'".format(case_number)
     result = sf.query(query)
+    # V3.0 handle exception that the case can't be found
+    if result["totalSize"]==0:
+        raise ValueError(f"!!The provided case doesn't exist")
     return result["records"][0]
 # update_case_clarification v2:
 # 1) removed parameter case_number
@@ -55,7 +60,8 @@ def update_case_clarification(sf, case_number, case_info):
     # current_date = datetime.today().strftime('%Y-%m-%d')
     # current_date = datetime.today().strftime('%Y-%b-%d')
     # formatted_date = "[" + current_date + "]"
-    formatted_date = datetime.today().strftime('[%d %b %y]')
+    # formatted_date = datetime.today().strftime('[%d %b %y]')
+    formatted_date = get_current_date()
     closure_working = formatted_date + working_str if(is_blank_str(orig_str)) else formatted_date + working_str + orig_str
 
     # Target values for Clarification fields
@@ -186,7 +192,7 @@ def update_case_assessment(sf, case_number, case_info):
         print(f"An Error occurred while updating assessment: {e}")
 
 
-# V2.3 Change:
+# V2.3 and V3.0 Changes:
 #   Added 4 functions below for article prompt generation
 #       get_product_info,get_release_info,get_date_code_info,get_last_email_content
 #   Note: Actually these functions are not related to this python file(which is UpdateSFClarification but placing here to reduce risk with version upgrade regression
@@ -195,7 +201,11 @@ def get_product_info(sf,productID):
     query = "SELECT Id,Name "\
             "FROM Product2 WHERE Id = '{}'".format(productID)
     result = sf.query(query)
-    return result["records"][0]
+    # V3.0 handle situation if product is not set
+    if result["totalSize"]==0:
+        return "PTC Product"
+    else:
+        return result["records"][0]["Name"]
 
 
 # Get Release Info
@@ -203,7 +213,11 @@ def get_release_info(sf,releaseID):
     query = "SELECT Id,Name "\
             "FROM Release__c WHERE Id = '{}'".format(releaseID)
     result = sf.query(query)
-    return result["records"][0]
+    # V3.0 handle situation if release is not set
+    if result["totalSize"] == 0:
+        return ""
+    else:
+        return result["records"][0]["Name"]
 
 
 # Get Date Code Info
@@ -211,7 +225,11 @@ def get_date_code_info(sf,dateCodeID):
     query = "SELECT Id,Name "\
             "FROM Date_Code__c WHERE Id = '{}'".format(dateCodeID)
     result = sf.query(query)
-    return result["records"][0]
+    # V3.0 handle situation if date code is not set
+    if result["totalSize"] == 0:
+        return ""
+    else:
+        return result["records"][0]["Name"]
 
 
 # Get Last Email attachment in the Case
@@ -224,7 +242,26 @@ def get_last_email_content(sf, case_id):
         LIMIT 1
     """
     result = sf.query(query)
-    return result["records"][0]
+    # V3.0 handle situation if Email is not attached to the case
+    if result["totalSize"] == 0:
+        return "N/A"
+    else:
+        return result["records"][0]["TextBody"]
+
+
+# V3.0 Get Case Comments:
+def get_case_comments(sf, case_id):
+    query = f"""
+        SELECT Id,ParentId,CommentBody,IsPublished,CreatedDate FROM CaseComment WHERE ParentId='{case_id}'
+        ORDER BY CreatedDate DESC
+        LIMIT 20
+    """
+    result = sf.query(query)
+    # V3.0 handle situation if No Case Comment
+    if result["totalSize"] == 0:
+        return "N/A"
+    else:
+        return result["records"]
 
 
 if __name__ == "__main__":
