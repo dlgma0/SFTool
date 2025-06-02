@@ -6,7 +6,6 @@ CreateFC*UI*.py
 main_*.py
 mygui.ui
 sfgui.ui
-sfgui_v3.ui
 sfgui - Copy.ui
 *test*.py
 UpdateSFCaseLanguage.py
