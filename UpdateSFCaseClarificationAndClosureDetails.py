@@ -10,7 +10,12 @@ from Utilities import get_current_date
 # case_info type: OrderedDict
 def is_fc_made(sf, case_info):
     case_id = case_info['Id']
-    tasks = sf.query_all("SELECT Id, Sub_Type__c FROM Task WHERE WhatId = '{}'".format(case_id))
+    # SFTool 3.0.0:
+    # Fixed this error that is newly added by salesforce admin since Aug 1 2025
+    # Exception while executing the task for CXXXXXXXX: Request refused for XXX [{'message': 'TXN_SECURITY_NO_ACCESS: You are not allowed to export more than 10 records due to a security policy in your organization. Contact your administrator for more information about security policies.\nXXXXX 'errorCode': 'TXN_SECURITY_NO_ACCESS'}]
+
+    # tasks = sf.query_all("SELECT Id, Sub_Type__c FROM Task WHERE WhatId = '{}'".format(case_id))
+    tasks = sf.query_all("SELECT Id, Sub_Type__c FROM Task WHERE WhatId = '{}' ORDER BY CreatedDate ASC LIMIT 10".format(case_id))
     task_type = 'First Contact'
     task_exists = False
     for task in tasks['records']:
@@ -251,10 +256,11 @@ def get_last_email_content(sf, case_id):
 
 # V3.0 Get Case Comments:
 def get_case_comments(sf, case_id):
+    # v3.0.0: Get 10 records as max
     query = f"""
         SELECT Id,ParentId,CommentBody,IsPublished,CreatedDate FROM CaseComment WHERE ParentId='{case_id}'
         ORDER BY CreatedDate DESC
-        LIMIT 20
+        LIMIT 10
     """
     result = sf.query(query)
     # V3.0 handle situation if No Case Comment

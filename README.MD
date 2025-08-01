@@ -10,6 +10,11 @@
         # 1. Logging exceptions instead of crashing the program when:
             1) Provided config.json file is invalid
             2) Provided Case number is invalid or doesn't exist
+            3) Fixed this error that is newly added by salesforce admin since Aug 1 2025
+                # Exception while executing the task for CXXXXXXXX: Request refused for XXX [{'message': 'TXN_SECURITY_NO_ACCESS: You are not allowed to export more than 10 records due to a security policy in your organization. Contact your administrator for more information about security policies.\nXXXXX 'errorCode': 'TXN_SECURITY_NO_ACCESS'}]
+                # Changed methods:
+                1) get_case_comments(sf, case_id)
+                2) is_fc_made(sf, case_info)
     # Improvements:
         # 1. Added Reset button on each page to reset the contents
         # 2. The error message will show in a popup message in addition to the log
