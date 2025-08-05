@@ -1,3 +1,5 @@
+# v3.0.1 change log:
+    # Removed FC from UI to make it generally available to public
 # v3.0 change log:
     # New Features:
         # 1. Article Prompt for AAA feature implemented
