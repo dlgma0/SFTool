@@ -35,7 +35,7 @@ from MyReadFile import get_config
     # When wrong credentials provided in config.json, then error is captured and shown
 
 # Load the GUI from the .ui file
-Ui_MainWindow, QMainWindow = loadUiType("sfgui_v3.ui")
+Ui_MainWindow, QMainWindow = loadUiType("sfgui_v301.ui")
 
 # This class defines the actual logic to run the tasks
 class Worker(QObject):
