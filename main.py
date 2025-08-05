@@ -34,6 +34,8 @@ from MyReadFile import get_config
     # Log print format added timestamp
     # When wrong credentials provided in config.json, then error is captured and shown
 
+# V3.0.1 Use sfgui_v301.ui other than sfgui_v3.ui
+# The default page changed from FC to Article Prompt
 # Load the GUI from the .ui file
 Ui_MainWindow, QMainWindow = loadUiType("sfgui_v301.ui")
 
@@ -304,6 +306,11 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         super(MyWindow, self).__init__()
         self.setupUi(self)
         self.sf = sf
+
+        # V3.0.1 hide the FC button and Article Grammar Check buttons
+        # Uncomment these two lines would show the buttons back
+        self.btn_fc.setVisible(False)
+        self.btn_grammar.setVisible(False)
 
         # V3.0 When display_error is called, skip the show_message_box, so defined a signal for that
         self.had_error = False
